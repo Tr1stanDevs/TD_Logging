@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./src/colors.hpp"
+#include "src/LogLib.hpp"
 
 #ifdef _WIN32 
 #include <windows.h>
@@ -7,7 +7,7 @@
 
 int main() {
     #ifdef _WIN32 
-        std::cout << RED << "Windows\n" << RESET;
+        LogLib::print_success("hi");
         #else
         std::cout << "Linux\n";
     #endif
