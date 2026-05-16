@@ -9,8 +9,7 @@ int main() {
     #ifdef _WIN32 
         LogLib::print_success("hi");
         #else
-        std::cout << "Linux\n";
+        LogLib::print_success((char*)"%s %s\n", "hi", "lol");
     #endif
 
-    std::cin.get();
 }

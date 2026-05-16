@@ -1,19 +1,43 @@
 #pragma once
+#include <cstdio>
+#include <cstring>
+#include <stdio.h>
 #include <iostream>
 #include "./colors.hpp"
 #include "./flags.hpp"
 
+
+
 namespace LogLib {
+    
+    template <typename ... Types>
+    inline void print_success(char format[], Types... args) {
+        char buffer[256];
+        std::strcpy(buffer, COLORS::GREEN);
+        std::strcat(buffer, format);
+        std::strcat(buffer, COLORS::RESET);
 
-    inline void print_success(const char message[]) {
-        std::cout << LogLib_COLORS::GREEN << message << LogLib_COLORS::RESET << std::endl;
+        printf(buffer, args...);
     };
 
-    inline void print_warning(const char message[]) {
-        std::cout << LogLib_COLORS::YELLOW << message << LogLib_COLORS::RESET << std::endl;
+    template <typename ... Types>
+    inline void print_warning(char format[], Types... args) {
+        char buffer[256];
+        std::strcpy(buffer, COLORS::YELLOW);
+        std::strcat(buffer, format);
+        std::strcat(buffer, COLORS::RESET);
+
+        printf(buffer, args...);
     };
-    inline void print_error(const char message[]) {
-        std::cout << LogLib_COLORS::RED << message << LogLib_COLORS::RESET << std::endl;
+
+    template <typename ... Types>
+    inline void print_error(char format[], Types... args) {
+        char buffer[256];
+        std::strcpy(buffer, COLORS::RED);
+        std::strcat(buffer, format);
+        std::strcat(buffer, COLORS::RESET);
+
+        printf(buffer, args...);
     };
     
 
