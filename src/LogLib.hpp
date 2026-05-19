@@ -6,9 +6,13 @@
 #include "./colors.hpp"
 #include "./flags.hpp"
 
+//1mb stacksize windows
+//8mb stacksize linux
+//https://lists.gnu.org/archive/html/bug-coreutils/2009-10/msg00262.html
 
 
 namespace LogLib {
+    inline int settings = 0;
     
     template <typename ... Types>
     inline void print_success(char format[], Types... args) {
@@ -39,6 +43,7 @@ namespace LogLib {
 
         printf(buffer, args...);
     };
+
     
 
 
