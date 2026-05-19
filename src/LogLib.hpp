@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <stdio.h>
@@ -13,11 +14,26 @@
 
 namespace LogLib {
     inline int settings = 0;
+
+    inline char* add_setting(char* format) {
+        uint64_t start = (uint64_t)format;
+        if (settings&PRINT_BOLD) { //code ;1 (1<<0)
+
+            while ((*format) != 0x6D) format++;
+
+            *(format) = 0x3B;
+            *(format+1) = 0x31;
+            *(format+2) = 0x6D;
+        }
+
+        return (char*)start;
+    };
+    
     
     template <typename ... Types>
-    inline void print_success(char format[], Types... args) {
+    inline void print_success(const char* format, Types... args) {
         char buffer[256];
-        std::strcpy(buffer, COLORS::GREEN);
+        std::strcpy(buffer, add_setting(COLORS::GREEN));
         std::strcat(buffer, format);
         std::strcat(buffer, COLORS::RESET);
 
@@ -25,9 +41,9 @@ namespace LogLib {
     };
 
     template <typename ... Types>
-    inline void print_warning(char format[], Types... args) {
+    inline void print_warning(const char* format, Types... args) {
         char buffer[256];
-        std::strcpy(buffer, COLORS::YELLOW);
+        std::strcpy(buffer, add_setting(COLORS::YELLOW));
         std::strcat(buffer, format);
         std::strcat(buffer, COLORS::RESET);
 
@@ -35,9 +51,9 @@ namespace LogLib {
     };
 
     template <typename ... Types>
-    inline void print_error(char format[], Types... args) {
+    inline void print_error(const char* format, Types... args) {
         char buffer[256];
-        std::strcpy(buffer, COLORS::RED);
+        std::strcpy(buffer, add_setting(COLORS::RED));
         std::strcat(buffer, format);
         std::strcat(buffer, COLORS::RESET);
 
