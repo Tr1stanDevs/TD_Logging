@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstring>
 #include <stdio.h>
-#include <iostream>
 #include "./colors.hpp"
 #include "./flags.hpp"
 
@@ -17,14 +16,25 @@ namespace Chroma {
 
     inline char* add_setting(char* format) {
         uint64_t start = (uint64_t)format;
-        if (settings&PRINT_BOLD) { //code ;1 (1<<0)
 
+        if (settings&PRINT_BOLD) { //code ;1 (1<<0)
             while ((*format) != 0x6D) format++;
 
             *(format) = 0x3B;
             *(format+1) = 0x31;
             *(format+2) = 0x6D;
         }
+
+        if (settings&PRINT_BLINKING) { //code ;1 (1<<0)
+            while ((*format) != 0x6D) format++;
+
+            *(format) = 0x3B;
+            *(format+1) = 0x35;
+            *(format+2) = 0x6D;
+        }
+
+
+
 
         return (char*)start;
     };
