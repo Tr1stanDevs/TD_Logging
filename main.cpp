@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/LogLib.hpp"
+#include "src/Chroma.hpp"
 #include "src/flags.hpp"
 
 #ifdef _WIN32 
@@ -7,13 +7,13 @@
 #endif
 
 int main() {
-    LogLib::settings |= PRINT_BOLD | PRINT_TIME;
+    Chroma::settings |= PRINT_BOLD | PRINT_TIME;
     //std::cout << LogLib::settings << std::endl;
 
     #ifdef _WIN32 
-        LogLib::print_success("hi");
+        Chroma::print_success("%s\n", "test");
         #else
-        LogLib::print_success("%s %s\n", "hi", "lol");
+        Chroma::print_success("%s %s\n", "hi", "lol");
     #endif
 
 }

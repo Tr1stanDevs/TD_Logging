@@ -12,7 +12,7 @@
 //https://lists.gnu.org/archive/html/bug-coreutils/2009-10/msg00262.html
 
 
-namespace LogLib {
+namespace Chroma {
     inline int settings = 0;
 
     inline char* add_setting(char* format) {
