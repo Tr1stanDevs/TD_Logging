@@ -29,7 +29,7 @@ namespace Chroma {
     }
 
     inline char* add_setting(char* format) {
-        uint64_t start = (uint64_t)format;
+        uint64_t color_code_base_address = reinterpret_cast<uint64_t>(format);
 
         if (Settings&PRINT_BOLD) { //code ;1 (1<<0)
             while ((*format) != 0x6D) format++;
@@ -47,11 +47,14 @@ namespace Chroma {
             *(format+2) = 0x6D;
         }
 
-
-
-
-        return (char*)start;
+        return (char*)color_code_base_address;
     };
+
+    inline void remove_setting(int settings_to_remove, ...) {
+        if (Settings&settings_to_remove) {
+            Settings = Settings & ~(settings_to_remove); 
+        }
+    }
     
     
     template <typename ... Types>
@@ -83,6 +86,16 @@ namespace Chroma {
 
         printf(buffer, args...);
     };
+
+    template <typename ... Types>
+    inline void print_color(const char* format, char* color, Types... args) {
+        char buffer[256];
+        std::strcpy(buffer, add_setting(color));
+        std::strcat(buffer, format);
+        std::strcat(buffer, COLORS::RESET);
+
+        printf(buffer, args...);
+    }
 
     
 
