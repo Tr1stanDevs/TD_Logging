@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <stdio.h>
+#include <ctime>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -80,15 +81,21 @@ static inline char *add_ansi_settings(char *ansi_color_buffer) {
   return (char *)color_code_base_address;
 };
 
+inline time_t timestamp = time(NULL);
+inline struct tm datetime = *localtime(&timestamp);
+
 inline void add_time(char *buffer) {
   if (Settings & PRINT_TIME) {
-    std::strcat(buffer, " [] ");
+    char output[50];
+    strftime(output, 50, "%B %e, %Y", &datetime);
+
+    std::strcat(buffer, output);
   }
 }
 
 inline void add_current_file(char *buffer) {
   if (Settings & PRINT_FILE) {
-    std::strcat(buffer, "test");
+    std::strcat(buffer, __FUNCTION__);
   }
 }
 } // namespace InternalFunctions
@@ -104,10 +111,11 @@ inline void remove_setting(int settings_to_remove, ...) {
 template <typename... Types>
 inline void print_success(const char *format, Types... args) {
   char buffer[256];
-  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(COLORS::GREEN));
+  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(ChromaColors::GREEN));
   ChromaInternalFunctions::add_time(buffer);
+  ChromaInternalFunctions::add_current_file(buffer);
   std::strcat(buffer, format);
-  std::strcat(buffer, COLORS::RESET);
+  std::strcat(buffer, ChromaColors::RESET);
 
   printf(buffer, args...);
 };
@@ -115,9 +123,9 @@ inline void print_success(const char *format, Types... args) {
 template <typename... Types>
 inline void print_warning(const char *format, Types... args) {
   char buffer[256];
-  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(COLORS::YELLOW));
+  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(ChromaColors::YELLOW));
   std::strcat(buffer, format);
-  std::strcat(buffer, COLORS::RESET);
+  std::strcat(buffer, ChromaColors::RESET);
 
   printf(buffer, args...);
 };
@@ -125,9 +133,9 @@ inline void print_warning(const char *format, Types... args) {
 template <typename... Types>
 inline void print_error(const char *format, Types... args) {
   char buffer[256];
-  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(COLORS::RED));
+  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(ChromaColors::RED));
   std::strcat(buffer, format);
-  std::strcat(buffer, COLORS::RESET);
+  std::strcat(buffer, ChromaColors::RESET);
 
   printf(buffer, args...);
 };
@@ -137,7 +145,7 @@ inline void print_color(const char *format, char *color, Types... args) {
   char buffer[256];
   std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(color));
   std::strcat(buffer, format);
-  std::strcat(buffer, COLORS::RESET);
+  std::strcat(buffer, ChromaColors::RESET);
 
   printf(buffer, args...);
 }
