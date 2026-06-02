@@ -7,7 +7,7 @@ int main() {
     Chroma::Init();
     //std::cout << LogLib::settings << std::endl;#
 
-    Chroma::print_success("%s %s\n", "hi", "lol");
+    Chroma::print("%s %s\n",LogLevel_ERROR, "hi", "lol");
     std::cin.get();
 
     return 0;
