@@ -5,6 +5,7 @@
 #include <ctime>
 #include <stdio.h>
 #include <iostream>
+#include <string.h>
 
 
 #ifdef _WIN32
@@ -58,20 +59,31 @@ inline char WHITE[32] = "\033[37m";              /* White */
 } // namespace ChromaColors
 
 namespace ChromaInternalFunctions {
+  inline size_t s_size(char* str) {
+    size_t len = 0;
+
+    while (*str != '\0') {
+      len++;
+      str++;
+      
+    }
+
+    return len+1;
+  }
 
 inline char *add_ansi_settings(char *ansi_buffer, int LogLevel) {
   uint64_t buffer_base_address = reinterpret_cast<uint64_t>(ansi_buffer);
     
   if (LogLevel&LogLevel_SUCCESS) {
-    std::strcpy(ansi_buffer, ChromaColors::GREEN);
+    strcpy_s(ansi_buffer, strlen(ChromaColors::GREEN)+1, ChromaColors::GREEN);
   }
 
   if (LogLevel&LogLevel_WARN) {
-    std::strcpy(ansi_buffer, ChromaColors::YELLOW);
+    strcpy_s(ansi_buffer, strlen(ChromaColors::YELLOW)+1, ChromaColors::YELLOW);
   }
 
   if (LogLevel&LogLevel_ERROR) {
-    std::strcpy(ansi_buffer, ChromaColors::RED);
+    strcpy_s(ansi_buffer, strlen(ChromaColors::RED)+1, ChromaColors::RED);
   }
 
   if (Settings & PRINT_BOLD) { // code ;1 (1<<0)
@@ -99,12 +111,14 @@ inline char *add_ansi_settings(char *ansi_buffer, int LogLevel) {
 
 inline void add_time(char *buffer) {
   if (Settings & PRINT_TIME) {
-    time_t timestamp = time(NULL);
-    struct tm datetime = *localtime(&timestamp);
     char output[50];
-    strftime(output, 50, " [%H:%M:%S %d.%m.%Y] ", &datetime);
 
-    std::strcat(buffer, output);
+    time_t timestamp = time(NULL);
+    struct tm newtime;
+    localtime_s(&newtime,&timestamp);
+    
+    std::strftime(output, 64, " [%H:%M:%S %d.%m.%Y] ", &newtime);
+    strcat_s(buffer , 64, output);
   }
 }
 } // namespace ChromaInternalFunctions
@@ -119,10 +133,10 @@ template <typename... Types>
 inline void print(const char *format, int LogLevel, Types... args) {
   char buffer[256];
   char ansi_buffer[64]{}; //add a \0 at the end
-  std::strcpy(buffer, ChromaInternalFunctions::add_ansi_settings(ansi_buffer, LogLevel));
+  strcpy_s(buffer, sizeof(buffer), ChromaInternalFunctions::add_ansi_settings(ansi_buffer, LogLevel));
   ChromaInternalFunctions::add_time(buffer);
-  std::strcat(buffer, format);
-  std::strcat(buffer, ChromaColors::RESET);
+  strcat_s(buffer, sizeof(buffer), format);
+  strcat_s(buffer, sizeof(buffer), ChromaColors::RESET);
 
   printf(buffer, args...);
 };
