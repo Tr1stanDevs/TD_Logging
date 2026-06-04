@@ -7,6 +7,9 @@
 #include <string.h>
 #include <iostream>
 
+#define CHROMA_COLOR_BUFFER_SIZE 32
+#define BUFFER_256 256
+#define BUFFER_512 512
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -35,6 +38,7 @@ namespace ChromaFlags {
 #define PRINT_TIME (1 << 1)     // bit 2
 #define PRINT_FILE (1 << 2)     // bit 3
 #define PRINT_BLINKING (1 << 3) // bit 4
+#define PRINT_PREFIX (1<<4)
 } // namespace ChromaFlags
 
 namespace ChromaLogLevels {
@@ -47,50 +51,54 @@ namespace ChromaLogLevels {
 }
 
 namespace ChromaColors {
-inline char RESET[32] = "\033[0m";
-inline char BLACK[32] = "\033[30m";              /* Black */
-inline char RED[32] = "\033[31m";                /* Red */
-inline char GREEN[32] = "\033[32m";              /* Green */
-inline char YELLOW[32] = "\033[33m";             /* Yellow */
-inline char BLUE[32] = "\033[34m";               /* Blue */
-inline char MAGENTA[32] = "\033[35m";            /* Magenta */
-inline char CYAN[32] = "\033[36m";               /* Cyan */
-inline char WHITE[32] = "\033[37m";              /* White */
+constexpr char RESET[CHROMA_COLOR_BUFFER_SIZE] = "\033[0m";
+constexpr char BLACK[CHROMA_COLOR_BUFFER_SIZE] = "\033[30m";              /* Black */
+constexpr char RED[CHROMA_COLOR_BUFFER_SIZE] = "\033[31m";                /* Red */
+constexpr char GREEN[CHROMA_COLOR_BUFFER_SIZE] = "\033[32m";              /* Green */
+constexpr char YELLOW[CHROMA_COLOR_BUFFER_SIZE] = "\033[33m";             /* Yellow */
+constexpr char BLUE[CHROMA_COLOR_BUFFER_SIZE] = "\033[34m";               /* Blue */
+constexpr char MAGENTA[CHROMA_COLOR_BUFFER_SIZE] = "\033[35m";            /* Magenta */
+constexpr char CYAN[CHROMA_COLOR_BUFFER_SIZE] = "\033[36m";               /* Cyan */
+constexpr char WHITE[CHROMA_COLOR_BUFFER_SIZE] = "\033[37m";              /* White */
 } // namespace ChromaColors
 
 namespace ChromaInternalFunctions {
 
-inline char *add_ansi_settings(char *ansi_buffer, int LogLevel) {
-  uint64_t buffer_base_address = reinterpret_cast<uint64_t>(ansi_buffer);
+inline char *add_ansi_settings(char *buffer, int LogLevel) {
+  uint64_t buffer_base_address = reinterpret_cast<uint64_t>(buffer);
     
-  if ((LogLevel&LogLevel_SUCCESS) & (Settings&LogLevel_SUCCESS)) {
-    strcpy_s(ansi_buffer, strlen(ChromaColors::GREEN)+1, ChromaColors::GREEN);
+  if (LogLevel&LogLevel_SUCCESS) {
+    strcat_s(buffer, strlen(ChromaColors::GREEN)+1, ChromaColors::GREEN);
   }
 
-  if ((LogLevel&LogLevel_WARN) & (Settings&LogLevel_WARN)) {
-    strcpy_s(ansi_buffer, strlen(ChromaColors::YELLOW)+1, ChromaColors::YELLOW);
+  if (LogLevel&LogLevel_WARN) {
+    strcat_s(buffer, strlen(ChromaColors::YELLOW)+1, ChromaColors::YELLOW);
   }
 
-  if ((LogLevel&LogLevel_ERROR) & (Settings&LogLevel_ERROR)) {
-    strcpy_s(ansi_buffer, strlen(ChromaColors::RED)+1, ChromaColors::RED);
+  if (LogLevel&LogLevel_ERROR) {
+    strcat_s(buffer, strlen(ChromaColors::RED)+1, ChromaColors::RED);
+  }
+
+  if (Settings&LogLevel_INFO) {
+    strcat_s(buffer, strlen(ChromaColors::BLUE)+1, ChromaColors::BLUE);
   }
 
   if (Settings & PRINT_BOLD) { // code ;1 (1<<0)
-    while ((*ansi_buffer) != 0x6D)
-      ansi_buffer++;
+    while ((*buffer) != 'm')
+      buffer++;
 
-    *(ansi_buffer) = 0x3B;
-    *(ansi_buffer + 1) = 0x31;
-    *(ansi_buffer + 2) = 0x6D;
+    *(buffer) = ';';
+    *(buffer + 1) = '1';
+    *(buffer + 2) = 'm';
   }
 
   if (Settings & PRINT_BLINKING) { // code ;1 (1<<0)
-    while ((*ansi_buffer) != 0x6D)
-      ansi_buffer++;
+    while ((*buffer) != 'm')
+      buffer++;
 
-    *(ansi_buffer) = 0x3B;
-    *(ansi_buffer + 1) = 0x35;
-    *(ansi_buffer + 2) = 0x6D;
+    *(buffer) = ';';
+    *(buffer + 1) = '5';
+    *(buffer + 2) = 'm';
   }
 
   
@@ -110,6 +118,21 @@ inline void add_time(char *buffer) {
     strcat_s(buffer , 64, output);
   }
 }
+
+inline void add_prefix(char* buffer, int LogLevel) {
+  if (LogLevel&LogLevel_SUCCESS) {
+    strcat_s(buffer, BUFFER_256, "[SUCCESS]");
+  } else if (LogLevel&LogLevel_WARN) {
+    strcat_s(buffer, BUFFER_256, "[WARN]");
+  } else if (LogLevel&LogLevel_ERROR) {
+    strcat_s(buffer, BUFFER_256, "[ERROR]");
+  } else if (LogLevel&LogLevel_INFO) {
+    strcat_s(buffer, BUFFER_256, "[INFO]");
+  } else {
+    strcat_s(buffer, BUFFER_256, "[???]");
+  }
+  
+}
 } // namespace ChromaInternalFunctions
 
 inline void remove_setting(int settings_to_remove, ...) {
@@ -120,17 +143,19 @@ inline void remove_setting(int settings_to_remove, ...) {
 
 template <typename... Types>
 inline void print(const char *format, int LogLevel, Types... args) {
-  if (
-  (Settings&LogLevel_SUCCESS) != LogLevel & 
-  (Settings&LogLevel_ERROR) != LogLevel  & 
-  (Settings&LogLevel_WARN) != LogLevel) return;
+  
+  if (((LogLevel & LogLevel_SUCCESS & Settings) == 0) && 
+    ((LogLevel & LogLevel_ERROR & Settings) == 0)  && 
+    ((LogLevel & LogLevel_WARN & Settings) == 0)   &&
+    ((LogLevel & LogLevel_INFO & Settings) == 0)   &&
+    ((LogLevel & LogLevel_ALL & Settings) == 0)) return;
 
-  char buffer[256];
-  char ansi_buffer[64]{}; //add a \0 at the end
-  strcpy_s(buffer, sizeof(buffer), ChromaInternalFunctions::add_ansi_settings(ansi_buffer, LogLevel));
+  char buffer[256]{};
+  strcpy_s(buffer, BUFFER_256, ChromaInternalFunctions::add_ansi_settings(buffer, LogLevel));
+  ChromaInternalFunctions::add_prefix(buffer, LogLevel);
   ChromaInternalFunctions::add_time(buffer);
-  strcat_s(buffer, sizeof(buffer), format);
-  strcat_s(buffer, sizeof(buffer), ChromaColors::RESET);
+  strcat_s(buffer, BUFFER_256, format);
+  strcat_s(buffer, BUFFER_256, ChromaColors::RESET);
 
   printf(buffer, args...);
 };
