@@ -59,17 +59,6 @@ inline char WHITE[32] = "\033[37m";              /* White */
 } // namespace ChromaColors
 
 namespace ChromaInternalFunctions {
-  inline size_t s_size(char* str) {
-    size_t len = 0;
-
-    while (*str != '\0') {
-      len++;
-      str++;
-      
-    }
-
-    return len+1;
-  }
 
 inline char *add_ansi_settings(char *ansi_buffer, int LogLevel) {
   uint64_t buffer_base_address = reinterpret_cast<uint64_t>(ansi_buffer);
