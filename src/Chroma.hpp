@@ -4,8 +4,8 @@
 #include <cstring>
 #include <ctime>
 #include <stdio.h>
-#include <iostream>
 #include <string.h>
+#include <iostream>
 
 
 #ifdef _WIN32
@@ -74,15 +74,15 @@ namespace ChromaInternalFunctions {
 inline char *add_ansi_settings(char *ansi_buffer, int LogLevel) {
   uint64_t buffer_base_address = reinterpret_cast<uint64_t>(ansi_buffer);
     
-  if (LogLevel&LogLevel_SUCCESS) {
+  if ((LogLevel&LogLevel_SUCCESS) & (Settings&LogLevel_SUCCESS)) {
     strcpy_s(ansi_buffer, strlen(ChromaColors::GREEN)+1, ChromaColors::GREEN);
   }
 
-  if (LogLevel&LogLevel_WARN) {
+  if ((LogLevel&LogLevel_WARN) & (Settings&LogLevel_WARN)) {
     strcpy_s(ansi_buffer, strlen(ChromaColors::YELLOW)+1, ChromaColors::YELLOW);
   }
 
-  if (LogLevel&LogLevel_ERROR) {
+  if ((LogLevel&LogLevel_ERROR) & (Settings&LogLevel_ERROR)) {
     strcpy_s(ansi_buffer, strlen(ChromaColors::RED)+1, ChromaColors::RED);
   }
 
@@ -131,6 +131,11 @@ inline void remove_setting(int settings_to_remove, ...) {
 
 template <typename... Types>
 inline void print(const char *format, int LogLevel, Types... args) {
+  if (
+  (Settings&LogLevel_SUCCESS) != LogLevel & 
+  (Settings&LogLevel_ERROR) != LogLevel  & 
+  (Settings&LogLevel_WARN) != LogLevel) return;
+
   char buffer[256];
   char ansi_buffer[64]{}; //add a \0 at the end
   strcpy_s(buffer, sizeof(buffer), ChromaInternalFunctions::add_ansi_settings(ansi_buffer, LogLevel));
