@@ -1,9 +1,10 @@
 
 #include <iostream>
+#include <numbers>
 #include "src/Chroma.hpp"
 
 int main() {
-    Chroma::Settings |= PRINT_BOLD | PRINT_BLINKING | PRINT_TIME | LogLevel_SUCCESS;
+    Chroma::Settings |= PRINT_BOLD | PRINT_BLINKING | PRINT_TIME | LogLevel_ALL;
     Chroma::Init();
     //std::cout << LogLib::settings << std::endl;#
 
@@ -14,7 +15,7 @@ int main() {
     Chroma::print("%s %s\n",LogLevel_SUCCESS, "hi", "543252");
     Chroma::print("%s %s\n",LogLevel_ERROR, "hi", "uztru");
     Chroma::print("%s %s\n",LogLevel_WARN, "hi", "jghfj");
-
+    Chroma::print("%s %s\n",LogLevel_INFO, "hi", "hhhhhhhhhhhhhhhhhh");
 
     return 0;
 }

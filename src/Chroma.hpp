@@ -19,7 +19,7 @@
 // https://lists.gnu.org/archive/html/bug-coreutils/2009-10/msg00262.html
 
 namespace Chroma {
-inline int Settings = 0;
+inline size_t Settings = 0;
 
 inline void Init() {
 #ifdef _WIN32
@@ -68,19 +68,19 @@ inline char *add_ansi_settings(char *buffer, int LogLevel) {
   uint64_t buffer_base_address = reinterpret_cast<uint64_t>(buffer);
     
   if (LogLevel&LogLevel_SUCCESS) {
-    strcat_s(buffer, strlen(ChromaColors::GREEN)+1, ChromaColors::GREEN);
+    strcat_s(buffer, sizeof(buffer), ChromaColors::GREEN);
   }
 
   if (LogLevel&LogLevel_WARN) {
-    strcat_s(buffer, strlen(ChromaColors::YELLOW)+1, ChromaColors::YELLOW);
+    strcat_s(buffer, sizeof(buffer), ChromaColors::YELLOW);
   }
 
   if (LogLevel&LogLevel_ERROR) {
-    strcat_s(buffer, strlen(ChromaColors::RED)+1, ChromaColors::RED);
+    strcat_s(buffer, sizeof(buffer), ChromaColors::RED);
   }
 
-  if (Settings&LogLevel_INFO) {
-    strcat_s(buffer, strlen(ChromaColors::BLUE)+1, ChromaColors::BLUE);
+  if (LogLevel&LogLevel_INFO) {
+    strcat_s(buffer, sizeof(buffer), ChromaColors::BLUE);
   }
 
   if (Settings & PRINT_BOLD) { // code ;1 (1<<0)
@@ -148,7 +148,7 @@ inline void print(const char *format, int LogLevel, Types... args) {
     ((LogLevel & LogLevel_ERROR & Settings) == 0)  && 
     ((LogLevel & LogLevel_WARN & Settings) == 0)   &&
     ((LogLevel & LogLevel_INFO & Settings) == 0)   &&
-    ((LogLevel & LogLevel_ALL & Settings) == 0)) return;
+    ((LogLevel_ALL & Settings) == 0)) return;
 
   char buffer[256]{};
   strcpy_s(buffer, BUFFER_256, ChromaInternalFunctions::add_ansi_settings(buffer, LogLevel));
