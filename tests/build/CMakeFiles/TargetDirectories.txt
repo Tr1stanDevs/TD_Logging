@@ -1,3 +1,0 @@
-C:/Users/tsimon/Desktop/LogLib/tests/build/CMakeFiles/test.dir
-C:/Users/tsimon/Desktop/LogLib/tests/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/tsimon/Desktop/LogLib/tests/build/CMakeFiles/ZERO_CHECK.dir
