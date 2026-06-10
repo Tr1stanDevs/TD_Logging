@@ -7,7 +7,7 @@
 #include <string.h>
 #include <iostream>
 
-#define CHROMA_COLOR_BUFFER_SIZE 32
+#define TD_Logging_COLOR_BUFFER_SIZE 32
 #define BUFFER_256 256
 #define BUFFER_512 512
 
@@ -18,7 +18,7 @@
 // 8mb stacksize linux
 // https://lists.gnu.org/archive/html/bug-coreutils/2009-10/msg00262.html
 
-namespace Chroma {
+namespace TD_Logging {
 inline size_t Settings = 0;
 
 inline void Init() {
@@ -33,7 +33,7 @@ inline void Init() {
 #endif
 }
 
-namespace ChromaFlags {
+namespace TD_LoggingFlags {
 #define PRINT_BOLD (1 << 0)     // bit 1
 #define PRINT_TIME (1 << 1)     // bit 2
 #define PRINT_FILE (1 << 2)     // bit 3
@@ -41,7 +41,7 @@ namespace ChromaFlags {
 #define PRINT_PREFIX (1<<4)
 } // namespace ChromaFlags
 
-namespace ChromaLogLevels {
+namespace TD_LoggingLevels {
 #define LogLevel_INFO (1<<20)
 #define LogLevel_SUCCESS (1<<21)
 #define LogLevel_WARN (1<<22)
@@ -50,37 +50,37 @@ namespace ChromaLogLevels {
 #define LogLevel_ALL (1<<25)
 }
 
-namespace ChromaColors {
-constexpr char RESET[CHROMA_COLOR_BUFFER_SIZE] = "\033[0m";
-constexpr char BLACK[CHROMA_COLOR_BUFFER_SIZE] = "\033[30m";              /* Black */
-constexpr char RED[CHROMA_COLOR_BUFFER_SIZE] = "\033[31m";                /* Red */
-constexpr char GREEN[CHROMA_COLOR_BUFFER_SIZE] = "\033[32m";              /* Green */
-constexpr char YELLOW[CHROMA_COLOR_BUFFER_SIZE] = "\033[33m";             /* Yellow */
-constexpr char BLUE[CHROMA_COLOR_BUFFER_SIZE] = "\033[34m";               /* Blue */
-constexpr char MAGENTA[CHROMA_COLOR_BUFFER_SIZE] = "\033[35m";            /* Magenta */
-constexpr char CYAN[CHROMA_COLOR_BUFFER_SIZE] = "\033[36m";               /* Cyan */
-constexpr char WHITE[CHROMA_COLOR_BUFFER_SIZE] = "\033[37m";              /* White */
+namespace TD_LoggingColors {
+constexpr char RESET[TD_Logging_COLOR_BUFFER_SIZE] = "\033[0m";
+constexpr char BLACK[TD_Logging_COLOR_BUFFER_SIZE] = "\033[30m";              /* Black */
+constexpr char RED[TD_Logging_COLOR_BUFFER_SIZE] = "\033[31m";                /* Red */
+constexpr char GREEN[TD_Logging_COLOR_BUFFER_SIZE] = "\033[32m";              /* Green */
+constexpr char YELLOW[TD_Logging_COLOR_BUFFER_SIZE] = "\033[33m";             /* Yellow */
+constexpr char BLUE[TD_Logging_COLOR_BUFFER_SIZE] = "\033[34m";               /* Blue */
+constexpr char MAGENTA[TD_Logging_COLOR_BUFFER_SIZE] = "\033[35m";            /* Magenta */
+constexpr char CYAN[TD_Logging_COLOR_BUFFER_SIZE] = "\033[36m";               /* Cyan */
+constexpr char WHITE[TD_Logging_COLOR_BUFFER_SIZE] = "\033[37m";              /* White */
 } // namespace ChromaColors
 
-namespace ChromaInternalFunctions {
+namespace TD_LoggingInternalFunctions {
 
 inline char *add_ansi_settings(char *buffer, int LogLevel) {
   uint64_t buffer_base_address = reinterpret_cast<uint64_t>(buffer);
     
   if (LogLevel&LogLevel_SUCCESS) {
-    strcat_s(buffer, sizeof(buffer), ChromaColors::GREEN);
+    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::GREEN);
   }
 
   if (LogLevel&LogLevel_WARN) {
-    strcat_s(buffer, sizeof(buffer), ChromaColors::YELLOW);
+    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::YELLOW);
   }
 
   if (LogLevel&LogLevel_ERROR) {
-    strcat_s(buffer, sizeof(buffer), ChromaColors::RED);
+    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::RED);
   }
 
   if (LogLevel&LogLevel_INFO) {
-    strcat_s(buffer, sizeof(buffer), ChromaColors::BLUE);
+    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::BLUE);
   }
 
   if (Settings & PRINT_BOLD) { // code ;1 (1<<0)
@@ -151,11 +151,11 @@ inline void print(const char *format, int LogLevel, Types... args) {
     ((LogLevel_ALL & Settings) == 0)) return;
 
   char buffer[256]{};
-  strcpy_s(buffer, BUFFER_256, ChromaInternalFunctions::add_ansi_settings(buffer, LogLevel));
-  ChromaInternalFunctions::add_prefix(buffer, LogLevel);
-  ChromaInternalFunctions::add_time(buffer);
+  strcpy_s(buffer, BUFFER_256, TD_LoggingInternalFunctions::add_ansi_settings(buffer, LogLevel));
+  TD_LoggingInternalFunctions::add_prefix(buffer, LogLevel);
+  TD_LoggingInternalFunctions::add_time(buffer);
   strcat_s(buffer, BUFFER_256, format);
-  strcat_s(buffer, BUFFER_256, ChromaColors::RESET);
+  strcat_s(buffer, BUFFER_256, TD_LoggingColors::RESET);
 
   printf(buffer, args...);
 };
