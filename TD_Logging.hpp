@@ -99,7 +99,6 @@ inline void add_ansi_settings(char *buffer, size_t buffer_size, int LogLevel) {
 };
 
 inline void add_time(char *buffer, size_t buffer_size) {
-  if ((Settings & LoggingFlags::PRINT_TIME) == 0) return;
     char output[128];
 
     time_t timestamp = time(NULL);
@@ -112,15 +111,15 @@ inline void add_time(char *buffer, size_t buffer_size) {
 }
 
 inline void add_prefix(char* buffer, size_t buffer_size, size_t LogLevel) {
-  if ((Settings&LoggingFlags::PRINT_PREFIX) == 0) return;
+  
 
-  if (LogLevel&LoggingLevels::LogLevel_SUCCESS&Settings) {
+  if (LogLevel&LoggingLevels::LogLevel_SUCCESS) {
     strcat_s(buffer, buffer_size, "[SUCCESS]");
-  } else if (LogLevel&LoggingLevels::LogLevel_WARN&Settings) {
+  } else if (LogLevel&LoggingLevels::LogLevel_WARN) {
     strcat_s(buffer, buffer_size, "[WARN]");
-  } else if (LogLevel&LoggingLevels::LogLevel_ERROR&Settings) {
+  } else if (LogLevel&LoggingLevels::LogLevel_ERROR) {
     strcat_s(buffer, buffer_size, "[ERROR]");
-  } else if (LogLevel&LoggingLevels::LogLevel_INFO&Settings) {
+  } else if (LogLevel&LoggingLevels::LogLevel_INFO) {
     strcat_s(buffer, buffer_size, "[INFO]");
   } else {
     strcat_s(buffer, buffer_size, "[???]");
@@ -146,8 +145,8 @@ inline void print(const char *format, int LogLevel, Types... args) {
 
   char buffer[1024]{};
   LoggingInternalFunctions::add_ansi_settings(buffer, sizeof(buffer), LogLevel);
-  LoggingInternalFunctions::add_prefix(buffer, sizeof(buffer), LogLevel);
-  LoggingInternalFunctions::add_time(buffer, sizeof(buffer));
+  if ((Settings&LoggingFlags::PRINT_PREFIX) != 0) LoggingInternalFunctions::add_prefix(buffer, sizeof(buffer), LogLevel);
+  if ((Settings&LoggingFlags::PRINT_TIME) != 0) LoggingInternalFunctions::add_time(buffer, sizeof(buffer));
   strcat_s(buffer, sizeof(buffer), format);
   strcat_s(buffer, sizeof(buffer), LoggingColors::RESET);
 
