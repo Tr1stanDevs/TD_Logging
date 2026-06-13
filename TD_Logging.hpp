@@ -99,13 +99,13 @@ inline void add_ansi_settings(char *buffer, size_t buffer_size, int LogLevel) {
 };
 
 inline void add_time(char *buffer, size_t buffer_size) {
-    char output[128];
+    char output[64];
 
     time_t timestamp = time(NULL);
     struct tm newtime;
     localtime_s(&newtime,&timestamp);
     
-    std::strftime(output, 128, " [%H:%M:%S %d.%m.%Y] ", &newtime);
+    std::strftime(output, sizeof(output), "[%H:%M:%S %d.%m.%Y] ", &newtime);
     strcat_s(buffer , buffer_size, output);
 
 }
