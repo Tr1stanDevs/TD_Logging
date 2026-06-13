@@ -114,15 +114,15 @@ inline void add_prefix(char* buffer, size_t buffer_size, size_t LogLevel) {
   
 
   if (LogLevel&LoggingLevels::LogLevel_SUCCESS) {
-    strcat_s(buffer, buffer_size, "[SUCCESS]");
+    strcat_s(buffer, buffer_size, "[SUCCESS] ");
   } else if (LogLevel&LoggingLevels::LogLevel_WARN) {
-    strcat_s(buffer, buffer_size, "[WARN]");
+    strcat_s(buffer, buffer_size, "[WARN] ");
   } else if (LogLevel&LoggingLevels::LogLevel_ERROR) {
-    strcat_s(buffer, buffer_size, "[ERROR]");
+    strcat_s(buffer, buffer_size, "[ERROR] ");
   } else if (LogLevel&LoggingLevels::LogLevel_INFO) {
-    strcat_s(buffer, buffer_size, "[INFO]");
+    strcat_s(buffer, buffer_size, "[INFO] ");
   } else {
-    strcat_s(buffer, buffer_size, "[???]");
+    strcat_s(buffer, buffer_size, "[???] ");
   }
   
 }
