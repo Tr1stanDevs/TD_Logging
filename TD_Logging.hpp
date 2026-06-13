@@ -6,10 +6,8 @@
 #include <ctime>
 #include <stdio.h>
 #include <string.h>
-#include <iostream>
 
 #define TD_Logging_COLOR_BUFFER_SIZE 32
-#define BUFFER_1024 1024
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -144,7 +142,7 @@ inline void print(const char *format, int LogLevel, Types... args) {
     ((LogLevel & LoggingLevels::LogLevel_INFO & Settings) == 0)   &&
     ((LoggingLevels::LogLevel_ALL & Settings) == 0)) return;
 
-  char buffer[BUFFER_1024]{};
+  char buffer[1024]{};
   LoggingInternalFunctions::add_ansi_settings(buffer, sizeof(buffer), LogLevel);
   LoggingInternalFunctions::add_prefix(buffer, sizeof(buffer), LogLevel);
   LoggingInternalFunctions::add_time(buffer, sizeof(buffer));
