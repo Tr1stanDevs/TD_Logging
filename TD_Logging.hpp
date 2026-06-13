@@ -108,7 +108,7 @@ inline void add_time(char *buffer, size_t buffer_size) {
     
     std::strftime(output, 128, " [%H:%M:%S %d.%m.%Y] ", &newtime);
     strcat_s(buffer , buffer_size, output);
-  }
+
 }
 
 inline void add_prefix(char* buffer, size_t buffer_size, size_t LogLevel) {
