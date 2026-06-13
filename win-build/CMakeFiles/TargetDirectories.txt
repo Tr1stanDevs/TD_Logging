@@ -1,3 +1,3 @@
-C:/DEV/CPP/GitModules/TD_Logging/win-build/CMakeFiles/TD_Logging.dir
-C:/DEV/CPP/GitModules/TD_Logging/win-build/CMakeFiles/ALL_BUILD.dir
-C:/DEV/CPP/GitModules/TD_Logging/win-build/CMakeFiles/ZERO_CHECK.dir
+C:/DEV/CPP/MainProjects/TD_Logging/win-build/CMakeFiles/TD_Logging.dir
+C:/DEV/CPP/MainProjects/TD_Logging/win-build/CMakeFiles/ALL_BUILD.dir
+C:/DEV/CPP/MainProjects/TD_Logging/win-build/CMakeFiles/ZERO_CHECK.dir

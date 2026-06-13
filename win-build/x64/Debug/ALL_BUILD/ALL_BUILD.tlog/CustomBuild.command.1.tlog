@@ -1,6 +1,6 @@
-^C:\DEV\CPP\GITMODULES\TD_LOGGING\CMAKELISTS.TXT
+^C:\DEV\CPP\MAINPROJECTS\TD_LOGGING\CMAKELISTS.TXT
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/DEV/CPP/GitModules/TD_Logging -BC:/DEV/CPP/GitModules/TD_Logging/win-build --check-stamp-file C:/DEV/CPP/GitModules/TD_Logging/win-build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/DEV/CPP/MainProjects/TD_Logging -BC:/DEV/CPP/MainProjects/TD_Logging/win-build --check-stamp-file C:/DEV/CPP/MainProjects/TD_Logging/win-build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

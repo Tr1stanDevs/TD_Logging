@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\DEV\CPP\GitModules\TD_Logging\main.cpp">
+    <ClCompile Include="C:\DEV\CPP\MainProjects\TD_Logging\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\DEV\CPP\GitModules\TD_Logging\CMakeLists.txt" />
+    <CustomBuild Include="C:\DEV\CPP\MainProjects\TD_Logging\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{D3513344-F4E3-3A73-93EB-7E3415ABFF59}</UniqueIdentifier>
+      <UniqueIdentifier>{35C9B90C-322A-36E8-A5E8-0B407D4B3E59}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
-^C:\DEV\CPP\GITMODULES\TD_LOGGING\WIN-BUILD\CMAKEFILES\738B9D3B36A190E63CB07847455F8223\GENERATE.STAMP.RULE
+^C:\DEV\CPP\MAINPROJECTS\TD_LOGGING\WIN-BUILD\CMAKEFILES\00B81AEA0B194F48AA2EA7362F932C67\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/DEV/CPP/GitModules/TD_Logging -BC:/DEV/CPP/GitModules/TD_Logging/win-build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/DEV/CPP/GitModules/TD_Logging/win-build/TD_Logging.slnx
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/DEV/CPP/MainProjects/TD_Logging -BC:/DEV/CPP/MainProjects/TD_Logging/win-build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/DEV/CPP/MainProjects/TD_Logging/win-build/TD_Logging.slnx
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
