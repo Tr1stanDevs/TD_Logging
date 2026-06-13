@@ -8,7 +8,6 @@
 #include <iostream>
 
 #define TD_Logging_COLOR_BUFFER_SIZE 32
-#define BUFFER_256 256
 #define BUFFER_512 512
 
 #ifdef _WIN32
@@ -68,19 +67,19 @@ inline char *add_ansi_settings(char *buffer, int LogLevel) {
   uint64_t buffer_base_address = reinterpret_cast<uint64_t>(buffer);
     
   if (LogLevel&LogLevel_SUCCESS) {
-    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::GREEN);
+    strcat_s(buffer, BUFFER_512, TD_LoggingColors::GREEN);
   }
 
   if (LogLevel&LogLevel_WARN) {
-    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::YELLOW);
+    strcat_s(buffer, BUFFER_512, TD_LoggingColors::YELLOW);
   }
 
   if (LogLevel&LogLevel_ERROR) {
-    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::RED);
+    strcat_s(buffer, BUFFER_512, TD_LoggingColors::RED);
   }
 
   if (LogLevel&LogLevel_INFO) {
-    strcat_s(buffer, sizeof(buffer), TD_LoggingColors::BLUE);
+    strcat_s(buffer, BUFFER_512, TD_LoggingColors::BLUE);
   }
 
   if (Settings & PRINT_BOLD) { // code ;1 (1<<0)
@@ -121,15 +120,15 @@ inline void add_time(char *buffer) {
 
 inline void add_prefix(char* buffer, int LogLevel) {
   if (LogLevel&LogLevel_SUCCESS) {
-    strcat_s(buffer, BUFFER_256, "[SUCCESS]");
+    strcat_s(buffer, BUFFER_512, "[SUCCESS]");
   } else if (LogLevel&LogLevel_WARN) {
-    strcat_s(buffer, BUFFER_256, "[WARN]");
+    strcat_s(buffer, BUFFER_512, "[WARN]");
   } else if (LogLevel&LogLevel_ERROR) {
-    strcat_s(buffer, BUFFER_256, "[ERROR]");
+    strcat_s(buffer, BUFFER_512, "[ERROR]");
   } else if (LogLevel&LogLevel_INFO) {
-    strcat_s(buffer, BUFFER_256, "[INFO]");
+    strcat_s(buffer, BUFFER_512, "[INFO]");
   } else {
-    strcat_s(buffer, BUFFER_256, "[???]");
+    strcat_s(buffer, BUFFER_512, "[???]");
   }
   
 }
@@ -150,12 +149,12 @@ inline void print(const char *format, int LogLevel, Types... args) {
     ((LogLevel & LogLevel_INFO & Settings) == 0)   &&
     ((LogLevel_ALL & Settings) == 0)) return;
 
-  char buffer[256]{};
-  strcpy_s(buffer, BUFFER_256, TD_LoggingInternalFunctions::add_ansi_settings(buffer, LogLevel));
+  char buffer[BUFFER_512]{};
+  strcpy_s(buffer, BUFFER_512, TD_LoggingInternalFunctions::add_ansi_settings(buffer, LogLevel));
   TD_LoggingInternalFunctions::add_prefix(buffer, LogLevel);
   TD_LoggingInternalFunctions::add_time(buffer);
-  strcat_s(buffer, BUFFER_256, format);
-  strcat_s(buffer, BUFFER_256, TD_LoggingColors::RESET);
+  strcat_s(buffer, BUFFER_512, format);
+  strcat_s(buffer, BUFFER_512, TD_LoggingColors::RESET);
 
   printf(buffer, args...);
 };

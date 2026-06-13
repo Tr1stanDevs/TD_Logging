@@ -14,6 +14,7 @@ int main() {
     TD_Logging::print("%s %s\n",LogLevel_ERROR, "hi", "uztru");
     TD_Logging::print("%s %s\n",LogLevel_WARN, "hi", "jghfj");
     TD_Logging::print("%s %s\n",LogLevel_INFO, "hi", "hhhhhhhhhhhhhhhhhh");
+    TD_Logging::print("%s", LogLevel_INFO, "Enter your Commit Message: ");
 
     return 0;
 }
