@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/DEV/CPP/GitModules/TD_Logging/win-build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
